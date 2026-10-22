@@ -1,0 +1,38 @@
+{
+  "name": "saez-discord-bot",
+  "version": "1.0.0",
+  "description": "Bot Discord officiel autonome et connecté à Saez Animes (Discord.js v14)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "deploy": "node deploy-commands.js",
+    "test": "node tests/backup.test.js && node tests/bookmark.test.js && node tests/cassetete.test.js && node tests/communaute.test.js && node tests/counting.test.js && node tests/creativite.test.js",
+    "test:backup": "node tests/backup.test.js",
+    "test:bookmark": "node tests/bookmark.test.js",
+    "test:cassetete": "node tests/cassetete.test.js",
+    "test:communaute": "node tests/communaute.test.js",
+    "test:counting": "node tests/counting.test.js",
+    "test:creativite": "node tests/creativite.test.js"
+  },
+  "keywords": [
+    "saez",
+    "discord",
+    "bot",
+    "discordjs",
+    "anime",
+    "stats"
+  ],
+  "author": "Saez",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.9.0",
+    "opusscript": "^0.0.8",
+    "play-dl": "^1.9.7",
+    "tweetnacl": "^1.0.3"
+  }
+}
