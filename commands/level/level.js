@@ -49,6 +49,47 @@ export const data = new SlashCommandBuilder()
       .setDescription('Ajouter de l\'XP à un membre (Staff)')
       .addUserOption((opt) => opt.setName('membre').setDescription('Membre cible').setRequired(true))
       .addIntegerOption((opt) => opt.setName('xp').setDescription('Montant d\'XP').setMinValue(1).setRequired(true))
+  )
+  .addSubcommand((sub) =>
+    sub
+      .setName('config')
+      .setDescription('Consulter et modifier la configuration du système de niveaux et XP')
+      .addChannelOption((opt) =>
+        opt
+          .setName('salon_annonces')
+          .setDescription('Salon textuel pour les annonces de passage de niveau')
+          .setRequired(false)
+      )
+      .addBooleanOption((opt) =>
+        opt
+          .setName('annonces_actives')
+          .setDescription('Activer ou désactiver les annonces de passage de niveau')
+          .setRequired(false)
+      )
+      .addIntegerOption((opt) =>
+        opt
+          .setName('xp_min')
+          .setDescription('Gain minimum d\'XP par message (défaut: 15)')
+          .setMinValue(1)
+          .setMaxValue(500)
+          .setRequired(false)
+      )
+      .addIntegerOption((opt) =>
+        opt
+          .setName('xp_max')
+          .setDescription('Gain maximum d\'XP par message (défaut: 25)')
+          .setMinValue(1)
+          .setMaxValue(500)
+          .setRequired(false)
+      )
+      .addIntegerOption((opt) =>
+        opt
+          .setName('xp_vocal')
+          .setDescription('Gain d\'XP par minute passée en vocal (défaut: 10)')
+          .setMinValue(1)
+          .setMaxValue(200)
+          .setRequired(false)
+      )
   );
 export async function execute(interaction) {
   await interaction.deferReply();
@@ -68,7 +109,6 @@ export async function execute(interaction) {
     const progressBar = createProgressBar(progressPct, 12);
     const avatarUrl = targetUser.displayAvatarURL({ dynamic: true, size: 256 });
     const colorHex = animeTitle.color.startsWith('#') ? animeTitle.color : `#${animeTitle.color}`;
-
     const embed = new EmbedBuilder()
       .setAuthor({ name: `Niveau & Rang — ${targetUser.username}`, iconURL: avatarUrl })
       .setTitle(`${animeTitle.emoji} Titre : ${animeTitle.title}`)
@@ -136,5 +176,97 @@ export async function execute(interaction) {
     return interaction.editReply({
       content: `✅ **${xpToAdd.toLocaleString()} XP** ont été attribués à <@${targetUser.id}> ! (Nouveau total : **${res.newTotalXp.toLocaleString()} XP** • Niveau : **${res.newLevel}**)`
     });
+  }
+  if (sub === 'config') {
+    if (
+      !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild) &&
+      !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
+    ) {
+      return interaction.editReply({
+        content: '❌ Cette commande est réservée aux modérateurs/administrateurs du serveur (Permission Gérer le serveur).',
+      });
+    }
+    const currentCfg = await getLevelConfig(guild.id);
+    const newAnnouncementChannel = interaction.options.getChannel('salon_annonces');
+    const newAnnouncementsEnabled = interaction.options.getBoolean('annonces_actives');
+    const newXpMin = interaction.options.getInteger('xp_min');
+    const newXpMax = interaction.options.getInteger('xp_max');
+    const newXpVocal = interaction.options.getInteger('xp_vocal');
+    let modified = false;
+    const updated = { ...currentCfg };
+
+    if (newAnnouncementChannel !== null) {
+      updated.announcement_channel_id = newAnnouncementChannel.id;
+      modified = true;
+    }
+    if (newAnnouncementsEnabled !== null) {
+      updated.announcements_enabled = newAnnouncementsEnabled;
+      modified = true;
+    }
+    if (newXpMin !== null) {
+      updated.xp_per_message_min = newXpMin;
+      modified = true;
+    }
+    if (newXpMax !== null) {
+      updated.xp_per_message_max = newXpMax;
+      modified = true;
+    }
+    if (newXpVocal !== null) {
+      updated.xp_per_voice_minute = newXpVocal;
+      modified = true;
+    }
+    if (modified) {
+      await saveLevelConfig(guild.id, updated);
+    }
+    const embed = new EmbedBuilder()
+      .setTitle('⚙️ Configuration du Système de Niveaux & XP')
+      .setColor(0x00e5ff)
+      .setDescription(
+        modified
+          ? '✅ **La configuration des niveaux et de l\'XP a été mise à jour avec succès !**'
+          : 'Voici la configuration actuelle du système de niveaux pour ce serveur :'
+      )
+      .addFields(
+        {
+          name: '📢 Salon d\'annonces',
+          value: updated.announcement_channel_id ? `<#${updated.announcement_channel_id}>` : '*Non défini (salon où le niveau est franchi)*',
+          inline: true,
+        },
+        {
+          name: '🔔 Annonces actives',
+          value: updated.announcements_enabled !== false ? '✅ Activé' : '❌ Désactivé',
+          inline: true,
+        },
+        {
+          name: '💬 XP par message',
+          value: `\`${updated.xp_per_message_min || 15} à ${updated.xp_per_message_max || 25} XP\` (délai : ${updated.message_cooldown_seconds || 60}s)`,
+          inline: true,
+        },
+        {
+          name: '🎙️ XP vocal',
+          value: `\`${updated.xp_per_voice_minute || 10} XP / minute\``,
+          inline: true,
+        },
+        {
+          name: '🏅 Rôles de Paliers Anime',
+          value: `${(updated.role_rewards || []).length} paliers configurés (Niveaux 10 à 50)`,
+          inline: true,
+        }
+      )
+      .setFooter({ text: 'Codé avec ❤️ par Saez | Cliquez ci-dessous pour créer automatiquement les rôles sur le serveur !' })
+      .setTimestamp();
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('level_cfg_sync_roles')
+        .setLabel('Créer / Associer les Rôles de Paliers')
+        .setEmoji('👑')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId('level_cfg_toggle_announcements')
+        .setLabel(updated.announcements_enabled !== false ? 'Désactiver Annonces' : 'Activer Annonces')
+        .setEmoji('🔔')
+        .setStyle(ButtonStyle.Secondary)
+    );
+    return interaction.editReply({ embeds: [embed], components: [row] });
   }
 }
