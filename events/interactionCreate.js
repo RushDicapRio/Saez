@@ -31,8 +31,10 @@ export default {
         try {
           const fs = await import('node:fs');
           const path = await import('node:path');
-          const { pathToFileURL } = await import('node:url');
-          const commandsPath = path.resolve(process.cwd(), 'bot', 'commands');
+          const localCommandsPath = path.join(__dirname, '..', 'commands');
+          const commandsPath = fs.existsSync(localCommandsPath)
+            ? localCommandsPath
+            : path.resolve(process.cwd(), 'bot', 'commands');
           async function findAndLoadCmd(dir) {
             if (!fs.existsSync(dir)) return null;
             const entries = fs.readdirSync(dir);
@@ -141,6 +143,46 @@ export default {
       if (customId.startsWith('cnt_')) {
         const { handleCountingButton } = await import('../services/counting/interactionHandler.js');
         return await handleCountingButton(interaction);
+      }
+      if (customId.startsWith('level_cfg_')) {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        if (
+          !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild) &&
+          !interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)
+        ) {
+          return await interaction.editReply({
+            content: '❌ Vous devez posséder la permission Gérer le serveur pour modifier cette configuration.',
+          });
+        }
+        const { getLevelConfig, saveLevelConfig, autoCreateMilestoneRoles } = await import('../services/discordLevelService.js');
+        if (customId === 'level_cfg_sync_roles') {
+          try {
+            const res = await autoCreateMilestoneRoles(guild);
+            const created = res.roles.filter((r) => r.action === 'created').length;
+            const existing = res.roles.filter((r) => r.action === 'existing').length;
+            return await interaction.editReply({
+              content:
+                `👑 **Rôles de Paliers Anime synchronisés avec succès !**\n` +
+                `• **${created}** rôle(s) créé(s) automatiquement\n` +
+                `• **${existing}** rôle(s) existant(s) relié(s)\n` +
+                `Les membres recevront leurs rôles aux paliers 10, 20, 30, 40 et 50 !`,
+            });
+          } catch (err) {
+            return await interaction.editReply({
+              content: `❌ Impossible de créer/lier les rôles : ${err.message}`,
+            });
+          }
+        }
+        if (customId === 'level_cfg_toggle_announcements') {
+          const cfg = await getLevelConfig(guild.id);
+          const newStatus = !(cfg.announcements_enabled !== false);
+          await saveLevelConfig(guild.id, { ...cfg, announcements_enabled: newStatus });
+          return await interaction.editReply({
+            content: newStatus
+              ? '🔔 **Les annonces de montée de niveau sont désormais activées !**'
+              : '🔕 **Les annonces de montée de niveau sont désormais désactivées.**',
+          });
+        }
       }
       if (customId.startsWith('creativite_')) {
         const { handleCreativiteInteraction } = await import('../services/creativiteInteractionHandler.js');
