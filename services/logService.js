@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { getDb } from '../database/mongo.js';
 import { config as appConfig } from '../config.js';
-const DEFAULT_LOG_CHANNEL = '1214631699401408602'; 
+const DEFAULT_LOG_CHANNEL = ''; 
 export async function getLogConfig(guildId) {
   const db = getDb();
   const col = db.collection('config');
