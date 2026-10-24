@@ -75,12 +75,18 @@ async function loadEvents() {
     }
   }
 }
+import { deployCommands } from './deploy-commands.js';
 async function main() {
   console.log('[BOT] Démarrage du bot Saez...');
   try {
     await connectMongo();
   } catch (dbErr) {
     console.error('[BOT] Impossible de se connecter à MongoDB. Vérifiez votre configuration .env :', dbErr.message);
+  }
+  try {
+    await deployCommands({ exitOnFinish: false });
+  } catch (deployErr) {
+    console.warn('[BOT] Déploiement automatique des commandes ignoré ou échoué :', deployErr.message);
   }
   await loadCommands();
   await loadEvents();
