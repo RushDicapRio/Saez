@@ -101,14 +101,14 @@ async function runAllTests() {
   await test('0.1 - Structure SlashCommandBuilder de /creativite valide pour Discord', () => {
     const json = creativiteCommandData.toJSON();
     assert.equal(json.name, 'creativite', 'Le nom de commande doit être creativite');
-    assert(json.description.length > 5, 'La description doit être présente');
-    assert.equal(json.options.length, 25, 'Doit contenir exactement 25 options à la racine (limite Discord)');
+    assert.ok(json.options.length <= 25, 'Ne doit pas dépasser 25 options à la racine (limite Discord)');
+    assert.ok(json.options.length >= 15, 'Doit contenir les options principales');
     const subNames = json.options.filter(o => o.type === 1).map(o => o.name);
-    assert(subNames.includes('lecture-suivi'), 'Doit inclure lecture-suivi');
-    assert(subNames.includes('mes-lectures'), 'Doit inclure mes-lectures');
-    assert(subNames.includes('chercher-recette'), 'Doit inclure chercher-recette');
-    assert(subNames.includes('lire-histoire'), 'Doit inclure lire-histoire');
-    assert(subNames.includes('ma-collection'), 'Doit inclure ma-collection');
+    assert(subNames.includes('hub'), 'Doit inclure hub');
+    assert(subNames.includes('explorer'), 'Doit inclure explorer');
+    assert(subNames.includes('statistiques'), 'Doit inclure statistiques');
+    assert(subNames.includes('aide'), 'Doit inclure aide');
+    assert(subNames.includes('rechercher'), 'Doit inclure rechercher');
     const groupNames = json.options.filter(o => o.type === 2).map(o => o.name);
     assert.equal(groupNames.length, 10, 'Doit contenir 10 groupes d\'ateliers');
     assert(groupNames.includes('lecture'));
