@@ -23,7 +23,7 @@ function getAllJsFiles(dirPath, arrayOfFiles = []) {
     const fullPath = path.join(dirPath, file);
     if (fs.statSync(fullPath).isDirectory()) {
       arrayOfFiles = getAllJsFiles(fullPath, arrayOfFiles);
-    } else if (file.endsWith('.js')) {
+    } else if (file.endsWith('.js') && !file.startsWith('_')) {
       arrayOfFiles.push(fullPath);
     }
   }
