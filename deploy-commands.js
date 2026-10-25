@@ -34,7 +34,7 @@ export async function deployCommands({ exitOnFinish = false } = {}) {
     if (exitOnFinish) process.exit(1);
     return false;
   }
-  if (!clientId || clientId === '1445626706470633543') {
+  if (!clientId || clientId === '') {
     try {
       const extracted = Buffer.from(token.split('.')[0], 'base64').toString('ascii');
       if (extracted && /^\d+$/.test(extracted)) {
