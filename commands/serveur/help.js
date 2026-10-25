@@ -709,10 +709,17 @@ export function buildCategoryEmbed(catKey, guild) {
   return embed;
 }
 export function buildOverviewEmbed(guild) {
+  const categoriesList = Object.entries(CATEGORIES_CONFIG);
+  let totalCmds = 0;
+  for (const [, data] of categoriesList) {
+    totalCmds += (data.commands || []).length;
+  }
   const embed = new EmbedBuilder()
     .setTitle('✨ Annuaire des Commandes — Bot Saez Animes')
     .setDescription(
-      'Bienvenue dans le centre d\'aide interactif officiel du bot **Saez Animes** !\n' +
+      'Bienvenue dans le centre d\'aide interactif officiel du bot **Saez Animes** !\n\n' +
+      `📊 **Statistiques :** 🤖 **${categoriesList.length} catégories** • ⚡ **${totalCmds} commandes slash disponibles**\n` +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
       'Utilisez le menu déroulant ci-dessous pour explorer chaque catégorie de commandes, leurs arguments et leurs fonctionnalités en détail.'
     )
     .setColor(0x00e5ff)
@@ -721,20 +728,22 @@ export function buildOverviewEmbed(guild) {
       text: 'Codé avec ❤️ par Saez | Saez Animes • Sélectionnez une catégorie ci-dessous',
       iconURL: guild?.iconURL() || undefined,
     });
-  let totalCmds = 0;
-  for (const [key, data] of Object.entries(CATEGORIES_CONFIG)) {
-    totalCmds += data.commands.length;
+  const maxFields = categoriesList.length > 25 ? 24 : 25;
+  const displayCategories = categoriesList.slice(0, maxFields);
+  for (const [key, data] of displayCategories) {
     embed.addFields({
       name: `${data.emoji} ${data.label}`,
-      value: `> *${data.description}*\n> \`/help ${key}\` • **${data.commands.length} commandes**`,
+      value: `> \`/help ${key}\` • **${data.commands.length} commandes**`,
       inline: true,
     });
   }
-  embed.addFields({
-    name: '📊 Statistiques globales',
-    value: `🤖 **${Object.keys(CATEGORIES_CONFIG).length} catégories** • ⚡ **${totalCmds} commandes slash disponibles**`,
-    inline: false,
-  });
+  if (categoriesList.length > 25) {
+    embed.addFields({
+      name: '➕ Autres Catégories',
+      value: `> *+${categoriesList.length - 24} autres catégories disponibles dans le menu déroulant ci-dessous !*`,
+      inline: true,
+    });
+  }
   return embed;
 }
 export function buildSelectMenuRow(selectedKey = null) {
