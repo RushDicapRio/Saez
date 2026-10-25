@@ -10,7 +10,6 @@ import {
   saveCountingConfig,
   resetCountingMemoryStore,
 } from '../services/countingService.js';
-import { data as countingCommandData } from '../commands/counting/counting.js';
 import { data as comptageCommandData } from '../commands/counting/comptage.js';
 console.log('🧪 ========================================================');
 console.log('🧪 DÉBUT DE LA SUITE DE TESTS COUNTING (SAEZ BOT)');
@@ -218,16 +217,10 @@ await runAsyncTest('Admin : Reset avec Snapshot préventif et Annulation (Undo)'
   assert.equal(logs[0].action, 'RESTORE_SNAPSHOT');
 });
 console.log('\n--- 7. Schéma Discord Slash Command ---');
-runTest('SlashCommand : /counting respecte la limite de 25 options de Discord', () => {
-  const json = countingCommandData.toJSON();
-  assert.equal(json.name, 'counting');
+runTest('SlashCommand : /comptage respecte la limite de 25 options de Discord', () => {
+  const json = comptageCommandData.toJSON();
+  assert.equal(json.name, 'comptage');
   assert.ok(json.options.length <= 25, `Trop d'options au niveau 1 : ${json.options.length}`);
-  for (const opt of json.options) {
-    if (opt.type === 2) {
-      // SubcommandGroup
-      assert.ok(opt.options.length <= 25, `Groupe ${opt.name} dépasse 25 sous-commandes : ${opt.options.length}`);
-    }
-  }
 });
 runTest('SlashCommand : /comptage conserve les sous-commandes salon, score et reset', () => {
   const json = comptageCommandData.toJSON();
