@@ -92,80 +92,78 @@ import {
 import { config } from '../../config.js';
 export const data = new SlashCommandBuilder()
   .setName('creativite')
-  .setDescription('Atelier de création Saez : livres, recettes, écriture, lettres, poésie, univers et collections')
+  .setDescription('Atelier de création Saez : livres, recettes, écriture, etc.')
   .addSubcommandGroup((grp) =>
     grp
       .setName('lecture')
-      .setDescription('Bibliothèque personnelle, suivi de tomes, sessions & clubs de lecture')
+      .setDescription('Bibliothèque personnelle et suivi de lecture')
       .addSubcommand((sub) =>
         sub
           .setName('ajouter')
-          .setDescription('Enregistrer un livre, manga, webtoon ou roman dans sa bibliothèque')
+          .setDescription('Enregistrer un livre ou manga')
           .addStringOption((opt) => opt.setName('titre').setDescription('Titre de l\'œuvre').setRequired(true))
           .addStringOption((opt) => opt.setName('auteur').setDescription('Auteur ou mangaka').setRequired(false))
           .addStringOption((opt) =>
             opt
               .setName('categorie')
-              .setDescription('Format de l\'œuvre')
+              .setDescription('Format')
               .setRequired(false)
               .addChoices(
-                { name: 'Manga 📖', value: 'Manga' },
-                { name: 'Light Novel 📜', value: 'Light Novel' },
-                { name: 'Webtoon 📱', value: 'Webtoon' },
-                { name: 'Roman 📚', value: 'Roman' },
-                { name: 'Comics 🦸', value: 'Comics' },
-                { name: 'Bande Dessinée 🎨', value: 'BD' }
+                { name: 'Manga', value: 'Manga' },
+                { name: 'Light Novel', value: 'Light Novel' },
+                { name: 'Webtoon', value: 'Webtoon' },
+                { name: 'Roman', value: 'Roman' },
+                { name: 'BD', value: 'BD' }
               )
           )
-          .addIntegerOption((opt) => opt.setName('tome_actuel').setDescription('Tome ou chapitre actuel lu').setRequired(false))
-          .addIntegerOption((opt) => opt.setName('total_tomes').setDescription('Nombre total de tomes parus').setRequired(false))
-          .addIntegerOption((opt) => opt.setName('note').setDescription('Note personnelle (0 à 5)').setMinValue(0).setMaxValue(5).setRequired(false))
-          .addStringOption((opt) => opt.setName('tags').setDescription('Tags séparés par virgules (ex: Shonen, Isekai)').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('tome_actuel').setDescription('Tome lu').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('total_tomes').setDescription('Total de tomes').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('note').setDescription('Note (0 à 5)').setMinValue(0).setMaxValue(5).setRequired(false))
+          .addStringOption((opt) => opt.setName('tags').setDescription('Tags').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Afficher la liste de vos livres et mangas')
+          .setDescription('Liste de vos livres et mangas')
           .addStringOption((opt) =>
             opt
               .setName('statut')
-              .setDescription('Filtrer par statut de lecture')
+              .setDescription('Filtrer par statut')
               .setRequired(false)
               .addChoices(
                 { name: 'En cours', value: 'En cours' },
                 { name: 'Terminé', value: 'Terminé' },
                 { name: 'À lire', value: 'À lire' },
-                { name: 'En pause', value: 'En pause' },
-                { name: 'Favoris ⭐', value: 'favoris' }
+                { name: 'Favoris', value: 'favoris' }
               )
           )
       )
       .addSubcommand((sub) =>
         sub
           .setName('session')
-          .setDescription('Enregistrer une session de lecture (pages ou tomes)')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant du livre').setRequired(true).setAutocomplete(true))
-          .addIntegerOption((opt) => opt.setName('tomes_lus').setDescription('Nombre de tomes lus lors de la session').setRequired(false))
-          .addIntegerOption((opt) => opt.setName('pages_lues').setDescription('Nombre de pages lues').setRequired(false))
-          .addIntegerOption((opt) => opt.setName('minutes').setDescription('Temps passé en minutes').setRequired(false))
-          .addStringOption((opt) => opt.setName('note').setDescription('Impression ou commentaire rapide').setRequired(false))
+          .setDescription('Enregistrer une session de lecture')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID du livre').setRequired(true).setAutocomplete(true))
+          .addIntegerOption((opt) => opt.setName('tomes_lus').setDescription('Tomes lus').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('pages_lues').setDescription('Pages lues').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('minutes').setDescription('Durée (min)').setRequired(false))
+          .addStringOption((opt) => opt.setName('note').setDescription('Commentaire').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('consulter')
-          .setDescription('Fiche détaillée d\'un livre de votre bibliothèque')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant du livre').setRequired(true).setAutocomplete(true))
+          .setDescription('Fiche détaillée d\'un livre')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID du livre').setRequired(true).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('supprimer')
-          .setDescription('Retirer un livre de sa bibliothèque')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant du livre').setRequired(true).setAutocomplete(true))
+          .setDescription('Retirer un livre')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID du livre').setRequired(true).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('club')
-          .setDescription('Rejoindre, créer ou proposer un livre dans un club de lecture')
+          .setDescription('Clubs de lecture')
           .addStringOption((opt) =>
             opt
               .setName('action')
@@ -177,422 +175,407 @@ export const data = new SlashCommandBuilder()
                 { name: 'Proposer un livre', value: 'suggest' }
               )
           )
-          .addStringOption((opt) => opt.setName('nom_ou_titre').setDescription('Nom du club ou Titre du livre suggéré').setRequired(false))
+          .addStringOption((opt) => opt.setName('nom_ou_titre').setDescription('Nom du club ou Titre').setRequired(false))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('recette')
-      .setDescription('Livre de cuisine gourmand, portions proportionnelles & courses')
+      .setDescription('Livre de cuisine')
       .addSubcommand((sub) =>
         sub
           .setName('ajouter')
-          .setDescription('Partager une nouvelle recette de cuisine')
-          .addStringOption((opt) => opt.setName('titre').setDescription('Nom du plat (ex: Ramen Ichiraku)').setRequired(true))
-          .addStringOption((opt) => opt.setName('ingredients').setDescription('Ingrédients séparés par virgules (ex: 200g nouilles, 2 œufs)').setRequired(true))
-          .addStringOption((opt) => opt.setName('etapes').setDescription('Étapes de préparation (séparées par des points ou retours)').setRequired(true))
+          .setDescription('Partager une nouvelle recette')
+          .addStringOption((opt) => opt.setName('titre').setDescription('Nom du plat').setRequired(true))
+          .addStringOption((opt) => opt.setName('ingredients').setDescription('Ingrédients (séparés par virgules)').setRequired(true))
+          .addStringOption((opt) => opt.setName('etapes').setDescription('Étapes de préparation').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('categorie')
               .setDescription('Catégorie culinaire')
               .setRequired(false)
               .addChoices(
-                { name: 'Anime Food 🎌', value: 'Anime Food' },
-                { name: 'Plat Chaud 🍲', value: 'Plat Chaud' },
-                { name: 'Dessert & Pâtisserie 🍰', value: 'Dessert' },
-                { name: 'Entrée & Snack 🥟', value: 'Entrée' },
-                { name: 'Boisson & Cocktail 🍹', value: 'Boisson' },
-                { name: 'Végétarien 🥗', value: 'Végétarien' }
+                { name: 'Anime Food', value: 'Anime Food' },
+                { name: 'Plat Chaud', value: 'Plat Chaud' },
+                { name: 'Dessert', value: 'Dessert' },
+                { name: 'Entrée', value: 'Entrée' },
+                { name: 'Boisson', value: 'Boisson' }
               )
           )
-          .addIntegerOption((opt) => opt.setName('portions').setDescription('Nombre de portions (défaut : 4)').setRequired(false))
-          .addStringOption((opt) => opt.setName('temps').setDescription('Temps de préparation (ex: 25 min)').setRequired(false))
-          .addStringOption((opt) => opt.setName('difficulte').setDescription('Facile, Moyen, Difficile').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('portions').setDescription('Portions (défaut: 4)').setRequired(false))
+          .addStringOption((opt) => opt.setName('temps').setDescription('Temps (ex: 25 min)').setRequired(false))
+          .addStringOption((opt) => opt.setName('difficulte').setDescription('Difficulté').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('consulter')
-          .setDescription('Afficher la fiche complète d\'une recette')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de la recette').setRequired(true).setAutocomplete(true))
+          .setDescription('Fiche d\'une recette')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de la recette').setRequired(true).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('rechercher')
-          .setDescription('Rechercher une recette par nom ou ingrédient')
-          .addStringOption((opt) => opt.setName('terme').setDescription('Nom du plat ou ingrédient').setRequired(true))
+          .setDescription('Rechercher une recette')
+          .addStringOption((opt) => opt.setName('terme').setDescription('Nom ou ingrédient').setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('portions')
-          .setDescription('Recalculer les quantités d\'ingrédients pour X convives')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de la recette').setRequired(true).setAutocomplete(true))
-          .addIntegerOption((opt) => opt.setName('personnes').setDescription('Nombre de convives souhaité').setMinValue(1).setMaxValue(50).setRequired(true))
+          .setDescription('Recalculer les portions')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de la recette').setRequired(true).setAutocomplete(true))
+          .addIntegerOption((opt) => opt.setName('personnes').setDescription('Nombre de convives').setMinValue(1).setMaxValue(50).setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('courses')
-          .setDescription('Générer une liste de courses à cocher depuis une recette')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de la recette').setRequired(true).setAutocomplete(true))
+          .setDescription('Liste de courses depuis une recette')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de la recette').setRequired(true).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('aleatoire')
-          .setDescription('Tirer au sort une délicieuse recette de la communauté')
-          .addStringOption((opt) => opt.setName('categorie').setDescription('Catégorie spécifique').setRequired(false))
+          .setDescription('Recette aléatoire')
+          .addStringOption((opt) => opt.setName('categorie').setDescription('Catégorie').setRequired(false))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('histoire')
-      .setDescription('Atelier d\'écriture, chapitres, contes collaboratifs et personnages')
+      .setDescription('Atelier d\'écriture et chapitres')
       .addSubcommand((sub) =>
         sub
           .setName('creer')
-          .setDescription('Créer une nouvelle histoire ou roman personnel')
-          .addStringOption((opt) => opt.setName('titre').setDescription('Titre de l\'histoire').setRequired(true))
+          .setDescription('Créer une histoire ou roman')
+          .addStringOption((opt) => opt.setName('titre').setDescription('Titre').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('genre')
-              .setDescription('Genre littéraire')
+              .setDescription('Genre')
               .setRequired(false)
               .addChoices(
-                { name: 'Fantasy & Magie 🧙', value: 'Fantasy' },
-                { name: 'Science-Fiction 🚀', value: 'Sci-Fi' },
-                { name: 'Shonen / Aventure ⚔️', value: 'Shonen' },
-                { name: 'Tranche de vie ☕', value: 'Tranche de vie' },
-                { name: 'Romance 🌸', value: 'Romance' },
-                { name: 'Horreur / Thriller 👻', value: 'Horreur' },
-                { name: 'Policier 🕵️', value: 'Policier' }
+                { name: 'Fantasy', value: 'Fantasy' },
+                { name: 'Sci-Fi', value: 'Sci-Fi' },
+                { name: 'Shonen', value: 'Shonen' },
+                { name: 'Romance', value: 'Romance' },
+                { name: 'Horreur', value: 'Horreur' }
               )
           )
-          .addStringOption((opt) => opt.setName('resume').setDescription('Court résumé de l\'intrigue').setRequired(false))
-          .addIntegerOption((opt) => opt.setName('objectif_mots').setDescription('Objectif de mots (ex: 15000)').setRequired(false))
+          .addStringOption((opt) => opt.setName('resume').setDescription('Résumé').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('objectif_mots').setDescription('Objectif de mots').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('chapitre')
-          .setDescription('Rédiger ou ajouter un chapitre à votre histoire')
-          .addStringOption((opt) => opt.setName('histoire_id').setDescription('Identifiant de l\'histoire').setRequired(true).setAutocomplete(true))
+          .setDescription('Ajouter un chapitre')
+          .addStringOption((opt) => opt.setName('histoire_id').setDescription('ID de l\'histoire').setRequired(true).setAutocomplete(true))
           .addStringOption((opt) => opt.setName('titre_chapitre').setDescription('Titre du chapitre').setRequired(true))
           .addStringOption((opt) => opt.setName('contenu').setDescription('Texte du chapitre').setRequired(true))
-          .addIntegerOption((opt) => opt.setName('numero').setDescription('Numéro du chapitre (facultatif)').setRequired(false))
+          .addIntegerOption((opt) => opt.setName('numero').setDescription('Numéro du chapitre').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('lire')
           .setDescription('Lire les chapitres d\'une histoire')
-          .addStringOption((opt) => opt.setName('histoire_id').setDescription('Identifiant de l\'histoire').setRequired(true).setAutocomplete(true))
-          .addIntegerOption((opt) => opt.setName('chapitre').setDescription('Numéro du chapitre à lire').setRequired(false))
+          .addStringOption((opt) => opt.setName('histoire_id').setDescription('ID de l\'histoire').setRequired(true).setAutocomplete(true))
+          .addIntegerOption((opt) => opt.setName('chapitre').setDescription('Numéro du chapitre').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('ecrire')
-          .setDescription('Ajouter une phrase au conte collectif du serveur (Legacy)')
-          .addStringOption((opt) => opt.setName('phrase').setDescription('Votre phrase ou paragraphe de suite').setRequired(true))
+          .setDescription('Ajouter une phrase au conte collectif')
+          .addStringOption((opt) => opt.setName('phrase').setDescription('Votre phrase').setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('personnage')
-          .setDescription('Ajouter une fiche de personnage à votre histoire')
-          .addStringOption((opt) => opt.setName('histoire_id').setDescription('Identifiant de l\'histoire').setRequired(true).setAutocomplete(true))
+          .setDescription('Ajouter un personnage')
+          .addStringOption((opt) => opt.setName('histoire_id').setDescription('ID de l\'histoire').setRequired(true).setAutocomplete(true))
           .addStringOption((opt) => opt.setName('nom').setDescription('Nom du personnage').setRequired(true))
-          .addStringOption((opt) => opt.setName('role').setDescription('Protagoniste, Antagoniste, Allié, Mentor...').setRequired(true))
-          .addStringOption((opt) => opt.setName('description').setDescription('Apparence, histoire et motivations').setRequired(true))
+          .addStringOption((opt) => opt.setName('role').setDescription('Rôle').setRequired(true))
+          .addStringOption((opt) => opt.setName('description').setDescription('Description').setRequired(true))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('lettre')
-      .setDescription('Rédaction de lettres cachetées, messages soignés et modèles de correspondance')
+      .setDescription('Rédaction de lettres cachetées')
       .addSubcommand((sub) =>
         sub
           .setName('rediger')
-          .setDescription('Rédiger une lettre personnelle ou officielle')
-          .addStringOption((opt) => opt.setName('titre').setDescription('Titre ou objet de la lettre').setRequired(true))
-          .addStringOption((opt) => opt.setName('contenu').setDescription('Texte de la lettre').setRequired(true))
-          .addStringOption((opt) => opt.setName('destinataire').setDescription('Nom du destinataire (facultatif)').setRequired(false))
+          .setDescription('Rédiger une lettre')
+          .addStringOption((opt) => opt.setName('titre').setDescription('Titre').setRequired(true))
+          .addStringOption((opt) => opt.setName('contenu').setDescription('Texte').setRequired(true))
+          .addStringOption((opt) => opt.setName('destinataire').setDescription('Destinataire').setRequired(false))
           .addStringOption((opt) =>
             opt
               .setName('tonalite')
-              .setDescription('Tonalité générale')
+              .setDescription('Tonalité')
               .setRequired(false)
               .addChoices(
-                { name: 'Amicale & Chaleureuse', value: 'Amicale' },
-                { name: 'Formelle & Respectueuse', value: 'Formelle' },
-                { name: 'Poétique & Éloquente', value: 'Poétique' },
-                { name: 'Humoristique & Légère', value: 'Humoristique' },
-                { name: 'Fictive (Jeu de rôle / Lore)', value: 'Fictive' },
-                { name: 'Lettre à soi-même dans le futur', value: 'Futur' }
+                { name: 'Amicale', value: 'Amicale' },
+                { name: 'Formelle', value: 'Formelle' },
+                { name: 'Poétique', value: 'Poétique' },
+                { name: 'Fictive', value: 'Fictive' }
               )
           )
       )
       .addSubcommand((sub) =>
         sub
           .setName('consulter')
-          .setDescription('Consulter une de vos lettres cachetées')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de la lettre').setRequired(true).setAutocomplete(true))
+          .setDescription('Consulter une lettre')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de la lettre').setRequired(true).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('modeles')
-          .setDescription('Découvrir les modèles de lettres prédéfinis prêts à l\'emploi')
+          .setDescription('Modèles de lettres prédéfinis')
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Consulter vos lettres rédigées et brouillons')
+          .setDescription('Vos lettres et brouillons')
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('poesie')
-      .setDescription('Atelier poésie : haïkus, sonnets, rimes phonétiques & vers métriques')
+      .setDescription('Atelier poésie')
       .addSubcommand((sub) =>
         sub
           .setName('creer')
-          .setDescription('Composer et enregistrer un poème ou haïku')
-          .addStringOption((opt) => opt.setName('titre').setDescription('Titre du poème').setRequired(true))
-          .addStringOption((opt) => opt.setName('texte').setDescription('Vers du poème (utilisez des retours à la ligne)').setRequired(true))
+          .setDescription('Composer un poème ou haïku')
+          .addStringOption((opt) => opt.setName('titre').setDescription('Titre').setRequired(true))
+          .addStringOption((opt) => opt.setName('texte').setDescription('Vers').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('forme')
-              .setDescription('Forme poétique')
+              .setDescription('Forme')
               .setRequired(false)
               .addChoices(
-                { name: 'Haïku (5-7-5) 🎋', value: 'Haïku' },
-                { name: 'Sonnet (14 vers) 📜', value: 'Sonnet' },
-                { name: 'Quatrain (4 vers) 🪶', value: 'Quatrain' },
-                { name: 'Poésie libre ✨', value: 'Poésie libre' },
-                { name: 'Poème en prose 📖', value: 'Poème en prose' },
-                { name: 'Acrostiche 🔤', value: 'Acrostiche' }
+                { name: 'Haïku', value: 'Haïku' },
+                { name: 'Sonnet', value: 'Sonnet' },
+                { name: 'Poésie libre', value: 'Poésie libre' }
               )
           )
-          .addStringOption((opt) => opt.setName('theme').setDescription('Thème (ex: Amour, Nature, Mélancolie)').setRequired(false))
+          .addStringOption((opt) => opt.setName('theme').setDescription('Thème').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('rimes')
-          .setDescription('Dictionnaire de suggestions de rimes françaises fiables')
-          .addStringOption((opt) => opt.setName('mot').setDescription('Mot à faire rimer').setRequired(true))
+          .setDescription('Dictionnaire de suggestions de rimes')
+          .addStringOption((opt) => opt.setName('mot').setDescription('Mot à rimer').setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('syllabes')
-          .setDescription('Estimer le nombre de syllabes métriques d\'un vers')
-          .addStringOption((opt) => opt.setName('vers').setDescription('Vers à analyser').setRequired(true))
+          .setDescription('Compteur de syllabes d\'un vers')
+          .addStringOption((opt) => opt.setName('vers').setDescription('Vers').setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Consulter vos poèmes et créations littéraires')
+          .setDescription('Consulter vos poèmes')
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('worldbuilding')
-      .setDescription('Conception d\'univers fictifs complets : géographie, lore, magie et factions')
+      .setDescription('Conception d\'univers fictifs')
       .addSubcommand((sub) =>
         sub
           .setName('univers')
-          .setDescription('Créer un univers fictif complet')
-          .addStringOption((opt) => opt.setName('nom').setDescription('Nom du monde imaginaire').setRequired(true))
-          .addStringOption((opt) => opt.setName('genre').setDescription('Genre (High Fantasy, Cyberpunk, Dark Fantasy...)').setRequired(true))
-          .addStringOption((opt) => opt.setName('description').setDescription('Présentation du monde et de son ambiance').setRequired(true))
+          .setDescription('Créer un univers fictif')
+          .addStringOption((opt) => opt.setName('nom').setDescription('Nom du monde').setRequired(true))
+          .addStringOption((opt) => opt.setName('genre').setDescription('Genre').setRequired(true))
+          .addStringOption((opt) => opt.setName('description').setDescription('Description').setRequired(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('element')
-          .setDescription('Ajouter une faction, système de magie, lieu ou règle de lore')
+          .setDescription('Ajouter une faction, magie ou lieu')
           .addStringOption((opt) => opt.setName('titre').setDescription('Nom de l\'élément').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('categorie')
-              .setDescription('Catégorie d\'élément')
+              .setDescription('Catégorie')
               .setRequired(true)
               .addChoices(
-                { name: '🏰 Faction / Guilde', value: 'Faction' },
-                { name: '✨ Système de Magie', value: 'Magie' },
-                { name: '🗺️ Géographie / Lieu', value: 'Géographie' },
-                { name: '📜 Lore & Histoire', value: 'Lore' },
-                { name: '⚙️ Technologie / Relique', value: 'Technologie' },
-                { name: '👤 Personnage Clé', value: 'Personnage' }
+                { name: 'Faction', value: 'Faction' },
+                { name: 'Magie', value: 'Magie' },
+                { name: 'Lieu', value: 'Géographie' },
+                { name: 'Lore', value: 'Lore' }
               )
           )
-          .addStringOption((opt) => opt.setName('description').setDescription('Explications et caractéristiques').setRequired(true))
-          .addStringOption((opt) => opt.setName('univers_id').setDescription('ID de l\'univers (facultatif si serveur)').setRequired(false).setAutocomplete(true))
+          .addStringOption((opt) => opt.setName('description').setDescription('Description').setRequired(true))
+          .addStringOption((opt) => opt.setName('univers_id').setDescription('ID de l\'univers').setRequired(false).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Explorer les éléments de lore et factions de l\'univers')
+          .setDescription('Explorer les éléments d\'un univers')
           .addStringOption((opt) => opt.setName('univers_id').setDescription('ID de l\'univers').setRequired(false).setAutocomplete(true))
       )
       .addSubcommand((sub) =>
         sub
           .setName('coherence')
-          .setDescription('Vérifier la complétude et cohérence de votre univers')
+          .setDescription('Cohérence de votre univers')
           .addStringOption((opt) => opt.setName('univers_id').setDescription('ID de l\'univers').setRequired(true).setAutocomplete(true))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('collection')
-      .setDescription('Gestionnaire d\'inventaire de collectionneur (figurines, mangas, cartes, goodies)')
+      .setDescription('Gestionnaire d\'inventaire de collectionneur')
       .addSubcommand((sub) =>
         sub
           .setName('ajouter')
           .setDescription('Ajouter un objet à votre collection')
-          .addStringOption((opt) => opt.setName('nom').setDescription('Nom de l\'objet (ex: Nendoroid Gojo Satoru)').setRequired(true))
+          .addStringOption((opt) => opt.setName('nom').setDescription('Nom de l\'objet').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('categorie')
-              .setDescription('Catégorie de l\'objet')
+              .setDescription('Catégorie')
               .setRequired(true)
               .addChoices(
-                { name: 'Figurine / Statue', value: 'Figurine' },
-                { name: 'Manga / Tome rare', value: 'Manga' },
-                { name: 'Carte à Jouer / TCG', value: 'Carte' },
-                { name: 'Artbook / Livre d\'art', value: 'Artbook' },
-                { name: 'Goodies / Vêtement', value: 'Goodies' },
-                { name: 'Autre collection', value: 'Autre' }
+                { name: 'Figurine', value: 'Figurine' },
+                { name: 'Manga rare', value: 'Manga' },
+                { name: 'Carte TCG', value: 'Carte' },
+                { name: 'Autre', value: 'Autre' }
               )
           )
-          .addStringOption((opt) => opt.setName('rarete').setDescription('Commune, Rare, Ultra-Rare, Édition Limitée').setRequired(false))
-          .addStringOption((opt) => opt.setName('etat').setDescription('Neuf sous scellé, Excellent, Bon état').setRequired(false))
-          .addStringOption((opt) => opt.setName('valeur').setDescription('Valeur estimée (ex: 60€)').setRequired(false))
+          .addStringOption((opt) => opt.setName('rarete').setDescription('Rareté').setRequired(false))
+          .addStringOption((opt) => opt.setName('etat').setDescription('État').setRequired(false))
+          .addStringOption((opt) => opt.setName('valeur').setDescription('Valeur estimée').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Consulter votre inventaire de collectionneur')
+          .setDescription('Consulter votre collection')
           .addStringOption((opt) => opt.setName('categorie').setDescription('Filtrer par catégorie').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('stats')
-          .setDescription('Statistiques d\'inventaire et estimation de valeur totale')
+          .setDescription('Statistiques d\'inventaire')
       )
       .addSubcommand((sub) =>
         sub
           .setName('supprimer')
-          .setDescription('Retirer un objet de sa collection')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de la pièce').setRequired(true).setAutocomplete(true))
+          .setDescription('Retirer un objet')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de l\'objet').setRequired(true).setAutocomplete(true))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('inspiration')
-      .setDescription('Générateurs d\'idées, défis d\'écriture & carnet de notes personnel')
+      .setDescription('Générateurs d\'idées et défis')
       .addSubcommand((sub) =>
         sub
           .setName('aleatoire')
-          .setDescription('Générer une idée créative aléatoire pour débloquer l\'inspiration')
+          .setDescription('Générer une idée créative')
           .addStringOption((opt) =>
             opt
               .setName('domaine')
-              .setDescription('Domaine d\'inspiration')
+              .setDescription('Domaine')
               .setRequired(false)
               .addChoices(
-                { name: 'Intrigue d\'histoire 📜', value: 'histoire' },
-                { name: 'Idée de personnage 👤', value: 'personnage' },
-                { name: 'Lieu mystérieux 🏰', value: 'lieu' },
-                { name: 'Recette gourmande 🍜', value: 'recette' }
+                { name: 'Histoire', value: 'histoire' },
+                { name: 'Personnage', value: 'personnage' },
+                { name: 'Lieu', value: 'lieu' },
+                { name: 'Recette', value: 'recette' }
               )
           )
       )
       .addSubcommand((sub) =>
         sub
           .setName('defi')
-          .setDescription('Découvrir le défi créatif du jour ou de la semaine')
+          .setDescription('Défi créatif du jour')
           .addStringOption((opt) =>
             opt
               .setName('frequence')
-              .setDescription('Quotidien ou Hebdomadaire')
+              .setDescription('Fréquence')
               .setRequired(false)
               .addChoices(
-                { name: 'Défi Quotidien (Rapide) ☀️', value: 'daily' },
-                { name: 'Défi Hebdomadaire (Approfondi) 📅', value: 'weekly' }
+                { name: 'Quotidien', value: 'daily' },
+                { name: 'Hebdomadaire', value: 'weekly' }
               )
           )
       )
       .addSubcommand((sub) =>
         sub
           .setName('carnet')
-          .setDescription('Consulter ou ajouter une note dans son carnet d\'idées personnel')
-          .addStringOption((opt) => opt.setName('texte').setDescription('Nouvelle idée à enregistrer (laisser vide pour lister)').setRequired(false))
-          .addStringOption((opt) => opt.setName('domaine').setDescription('Domaine de l\'idée').setRequired(false))
+          .setDescription('Consulter ou ajouter au carnet d\'idées')
+          .addStringOption((opt) => opt.setName('texte').setDescription('Nouvelle idée').setRequired(false))
+          .addStringOption((opt) => opt.setName('domaine').setDescription('Domaine').setRequired(false))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('projet')
-      .setDescription('Projets créatifs collaboratifs en équipe (romans, univers, fanzines)')
+      .setDescription('Projets créatifs en équipe')
       .addSubcommand((sub) =>
         sub
           .setName('creer')
-          .setDescription('Lancer un nouveau projet créatif d\'équipe')
-          .addStringOption((opt) => opt.setName('titre').setDescription('Titre du projet collaboratif').setRequired(true))
+          .setDescription('Lancer un projet collaboratif')
+          .addStringOption((opt) => opt.setName('titre').setDescription('Titre').setRequired(true))
           .addStringOption((opt) =>
             opt
               .setName('type')
               .setDescription('Type de projet')
               .setRequired(false)
               .addChoices(
-                { name: 'Roman collectif 📖', value: 'Roman collectif' },
-                { name: 'Univers partagé 🌍', value: 'Univers partagé' },
-                { name: 'Recueil de recettes 🍲', value: 'Recueil de recettes' },
-                { name: 'Anthologie poétique 🌸', value: 'Anthologie poétique' },
-                { name: 'Fanzine communautaire 📰', value: 'Fanzine' }
+                { name: 'Roman collectif', value: 'Roman collectif' },
+                { name: 'Univers partagé', value: 'Univers partagé' },
+                { name: 'Fanzine', value: 'Fanzine' }
               )
           )
-          .addStringOption((opt) => opt.setName('description').setDescription('Objectif et synopsis du projet').setRequired(false))
+          .addStringOption((opt) => opt.setName('description').setDescription('Objectif').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('liste')
-          .setDescription('Consulter les projets créatifs actifs sur le serveur')
+          .setDescription('Consulter les projets créatifs actifs')
       )
       .addSubcommand((sub) =>
         sub
           .setName('rejoindre')
-          .setDescription('Rejoindre un projet créatif collaboratif')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant du projet').setRequired(true).setAutocomplete(true))
-          .addStringOption((opt) => opt.setName('role').setDescription('Votre rôle (Auteur, Illustrateur, Relecteur...)').setRequired(false))
+          .setDescription('Rejoindre un projet créatif')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID du projet').setRequired(true).setAutocomplete(true))
+          .addStringOption((opt) => opt.setName('role').setDescription('Votre rôle').setRequired(false))
       )
       .addSubcommand((sub) =>
         sub
           .setName('tache')
-          .setDescription('Ajouter une tâche créative à un projet')
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant du projet').setRequired(true).setAutocomplete(true))
-          .addStringOption((opt) => opt.setName('titre').setDescription('Description de la tâche').setRequired(true))
-          .addStringOption((opt) => opt.setName('assigne_a').setDescription('Membre assigné ou Tous').setRequired(false))
+          .setDescription('Ajouter une tâche à un projet')
+          .addStringOption((opt) => opt.setName('id').setDescription('ID du projet').setRequired(true).setAutocomplete(true))
+          .addStringOption((opt) => opt.setName('titre').setDescription('Description tâche').setRequired(true))
+          .addStringOption((opt) => opt.setName('assigne_a').setDescription('Assigné à').setRequired(false))
       )
   )
   .addSubcommandGroup((grp) =>
     grp
       .setName('galerie')
-      .setDescription('Vitrine publique et galerie de partage des œuvres du serveur')
+      .setDescription('Galerie de partage des œuvres')
       .addSubcommand((sub) =>
         sub
           .setName('explorer')
-          .setDescription('Parcourir les créations partagées par les membres')
+          .setDescription('Parcourir les créations partagées')
           .addStringOption((opt) =>
             opt
               .setName('type')
               .setDescription('Filtrer par type')
               .setRequired(false)
               .addChoices(
-                { name: 'Recettes 🍜', value: 'recette' },
-                { name: 'Histoires 📜', value: 'histoire' },
-                { name: 'Poèmes 🌸', value: 'poeme' },
-                { name: 'Univers 🌍', value: 'univers' }
+                { name: 'Recettes', value: 'recette' },
+                { name: 'Histoires', value: 'histoire' },
+                { name: 'Poèmes', value: 'poeme' }
               )
           )
       )
       .addSubcommand((sub) =>
         sub
           .setName('publier')
-          .setDescription('Publier une de vos créations dans la galerie publique')
+          .setDescription('Publier une création dans la galerie')
           .addStringOption((opt) =>
             opt
               .setName('type')
@@ -604,89 +587,46 @@ export const data = new SlashCommandBuilder()
                 { name: 'Poème', value: 'poeme' }
               )
           )
-          .addStringOption((opt) => opt.setName('id').setDescription('Identifiant de votre création').setRequired(true).setAutocomplete(true))
-          .addStringOption((opt) => opt.setName('titre').setDescription('Titre affiché dans la galerie').setRequired(true))
-          .addStringOption((opt) => opt.setName('description').setDescription('Petite présentation pour les lecteurs').setRequired(false))
+          .addStringOption((opt) => opt.setName('id').setDescription('ID de votre création').setRequired(true).setAutocomplete(true))
+          .addStringOption((opt) => opt.setName('titre').setDescription('Titre').setRequired(true))
+          .addStringOption((opt) => opt.setName('description').setDescription('Présentation').setRequired(false))
       )
   )
   .addSubcommand((sub) =>
-    sub.setName('hub').setDescription('Ouvrir le menu interactif principal de l\'espace créatif')
+    sub.setName('hub').setDescription('Menu interactif principal de l\'espace créatif')
   )
   .addSubcommand((sub) =>
-    sub.setName('explorer').setDescription('Découvrir les ateliers, outils et fonctionnalités créatives')
+    sub.setName('explorer').setDescription('Découvrir tous les ateliers')
   )
   .addSubcommand((sub) =>
-    sub.setName('statistiques').setDescription('Consulter votre bilan créatif complet et progression')
+    sub.setName('statistiques').setDescription('Bilan créatif personnel')
   )
   .addSubcommand((sub) =>
-    sub.setName('aide').setDescription('Guide d\'utilisation interactif de tous les ateliers')
+    sub.setName('aide').setDescription('Guide d\'utilisation interactif')
   )
   .addSubcommand((sub) =>
     sub
       .setName('exporter')
-      .setDescription('Télécharger vos créations au format JSON ou Markdown lisible')
+      .setDescription('Télécharger vos créations en JSON ou Markdown')
       .addStringOption((opt) =>
         opt
           .setName('format')
-          .setDescription('Format du fichier')
+          .setDescription('Format')
           .setRequired(false)
-          .addChoices({ name: 'Fichier JSON structuré', value: 'json' }, { name: 'Document Markdown lisible', value: 'markdown' })
+          .addChoices({ name: 'JSON', value: 'json' }, { name: 'Markdown', value: 'markdown' })
       )
   )
   .addSubcommand((sub) =>
     sub
       .setName('importer')
-      .setDescription('Importer des créations validées depuis un fichier JSON')
-      .addAttachmentOption((opt) => opt.setName('fichier').setDescription('Fichier JSON à importer').setRequired(true))
+      .setDescription('Importer des créations depuis un fichier JSON')
+      .addAttachmentOption((opt) => opt.setName('fichier').setDescription('Fichier JSON').setRequired(true))
   )
   .addSubcommand((sub) =>
     sub
       .setName('rechercher')
-      .setDescription('Recherche transversale dans toutes vos créations personnelles')
-      .addStringOption((opt) => opt.setName('terme').setDescription('Mot-clé à rechercher').setRequired(true))
-  )
-  .addSubcommand((sub) =>
-    sub.setName('favoris').setDescription('Consulter vos lectures, recettes et créations favorites')
-  )
-  .addSubcommand((sub) =>
-    sub.setName('brouillons').setDescription('Afficher vos écrits et lettres en cours de rédaction')
-  )
-  .addSubcommand((sub) =>
-    sub.setName('recents').setDescription('Consulter vos créations modifiées récemment')
-  )
-  .addSubcommand((sub) =>
-    sub
-      .setName('lecture-suivi')
-      .setDescription('[Legacy] Enregistrer ou suivre un livre, manga ou webtoon lu')
-      .addStringOption((opt) => opt.setName('titre').setDescription('Nom de l\'œuvre').setRequired(true))
-      .addIntegerOption((opt) => opt.setName('tome_actuel').setDescription('Tome ou chapitre actuel').setRequired(true))
-      .addIntegerOption((opt) => opt.setName('total_tomes').setDescription('Nombre total de tomes parus').setRequired(false))
-      .addStringOption((opt) =>
-        opt
-          .setName('type')
-          .setDescription('Type d\'œuvre')
-          .addChoices(
-            { name: 'Manga 📖', value: 'Manga' },
-            { name: 'Light Novel 📜', value: 'Light Novel' },
-            { name: 'Webtoon 📱', value: 'Webtoon' },
-            { name: 'Roman 📚', value: 'Roman' }
-          )
-      )
-  )
-  .addSubcommand((sub) =>
-    sub.setName('mes-lectures').setDescription('[Legacy] Afficher la liste de vos mangas et livres en cours')
-  )
-  .addSubcommand((sub) =>
-    sub
-      .setName('chercher-recette')
-      .setDescription('[Legacy] Rechercher une recette dans le livre culinaire')
-      .addStringOption((opt) => opt.setName('plat').setDescription('Nom du plat ou ingrédient').setRequired(false))
-  )
-  .addSubcommand((sub) =>
-    sub.setName('lire-histoire').setDescription('[Legacy] Lire l\'histoire collective rédigée par les membres')
-  )
-  .addSubcommand((sub) =>
-    sub.setName('ma-collection').setDescription('[Legacy] Consulter votre inventaire de collectionneur')
+      .setDescription('Recherche transversale dans vos créations')
+      .addStringOption((opt) => opt.setName('terme').setDescription('Mot-clé').setRequired(true))
   );
 export async function autocomplete(interaction) {
   try {
