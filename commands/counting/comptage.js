@@ -11,7 +11,6 @@ import {
   AdminEngine,
   CountingEngine,
 } from '../../services/countingService.js';
-import { execute as countingExecute } from './counting.js';
 import { config } from '../../config.js';
 export const data = new SlashCommandBuilder()
   .setName('comptage')
@@ -90,6 +89,19 @@ export async function execute(interaction) {
     });
   }
   if (sub === 'aide') {
-    return await countingExecute(interaction);
+    const embed = new EmbedBuilder()
+      .setTitle('🔢 Règles du Jeu de Comptage')
+      .setColor(0x38bdf8)
+      .setDescription(
+        '**Comment jouer ?**\n' +
+        '• Les membres doivent compter de 1 en 1 dans le salon dédié.\n' +
+        '• Une même personne **ne peut pas** envoyer deux nombres à la suite !\n' +
+        '• Si quelqu\'un se trompe ou brise la chaîne, le compteur retombe à zéro.\n\n' +
+        '**Commandes utiles :**\n' +
+        '`/comptage score` : Consulter le record et le nombre actuel\n' +
+        '`/comptage salon [cible]` : Configurer le salon de jeu (Admin)'
+      )
+      .setFooter({ text: 'Codé avec ❤️ par Saez' });
+    return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   }
 }
