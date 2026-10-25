@@ -8,13 +8,14 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "deploy": "node deploy-commands.js",
-    "test": "node tests/backup.test.js && node tests/bookmark.test.js && node tests/cassetete.test.js && node tests/communaute.test.js && node tests/counting.test.js && node tests/creativite.test.js",
+    "test": "node tests/backup.test.js && node tests/bookmark.test.js && node tests/cassetete.test.js && node tests/communaute.test.js && node tests/counting.test.js && node tests/creativite.test.js && node tests/animeparty.test.js",
     "test:backup": "node tests/backup.test.js",
     "test:bookmark": "node tests/bookmark.test.js",
     "test:cassetete": "node tests/cassetete.test.js",
     "test:communaute": "node tests/communaute.test.js",
     "test:counting": "node tests/counting.test.js",
-    "test:creativite": "node tests/creativite.test.js"
+    "test:creativite": "node tests/creativite.test.js",
+    "test:animeparty": "node tests/animeparty.test.js"
   },
   "keywords": [
     "saez",
