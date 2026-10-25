@@ -197,8 +197,11 @@ export default {
         embed.setDescription('*Cet inventaire est actuellement vide.*\nVisitez la boutique avec `/eco shop` pour acheter votre premier article !');
       } else {
         const itemCounts = {};
-        for (const id of inventory) {
-          itemCounts[id] = (itemCounts[id] || 0) + 1;
+        for (const entry of inventory) {
+          const id = typeof entry === 'object' && entry !== null ? entry.id : entry;
+          if (id) {
+            itemCounts[id] = (itemCounts[id] || 0) + 1;
+          }
         }
         for (const [id, count] of Object.entries(itemCounts)) {
           const itemDef = SHOP_ITEMS.find((i) => i.id === id);
