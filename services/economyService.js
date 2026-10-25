@@ -157,8 +157,9 @@ export async function purchaseItem(guildId, userId, itemId) {
     bought_at: new Date(),
   });
   await saveUserEconomy(wallet);
-  return { success: true, item, newBalance: wallet.balance };
+  return { success: true, item, balance: wallet.balance, newBalance: wallet.balance };
 }
+export const buyItem = purchaseItem;
 export async function getLeaderboardEco(guildId, limit = 10) {
   try {
     const db = getDb();
