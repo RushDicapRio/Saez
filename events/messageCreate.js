@@ -12,6 +12,12 @@ export default {
   async execute(message) {
     if (!message.guild || message.author.bot) return;
     try {
+      if (message.channel?.isThread?.()) {
+        const { recordDiscordThreadMessage } = await import('../services/cloudRelayService.js');
+        await recordDiscordThreadMessage(message);
+      }
+    } catch {}
+    try {
       const { handleTicketStaffPing } = await import('../services/ticketService.js');
       const pingHandled = await handleTicketStaffPing(message);
       if (pingHandled) return;
