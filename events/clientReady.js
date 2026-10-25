@@ -76,5 +76,11 @@ export default {
     } catch (bkErr) {
       console.error('[BOT] Erreur lors du lancement du planificateur de sauvegarde :', bkErr);
     }
+    try {
+      const { startCloudRelayService } = await import('../services/cloudRelayService.js');
+      startCloudRelayService(client);
+    } catch (cloudErr) {
+      console.error('[BOT] Erreur lors du lancement de la passerelle Cloud Relay :', cloudErr);
+    }
   },
 };
