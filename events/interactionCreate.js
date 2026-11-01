@@ -835,5 +835,24 @@ export default {
         });
       }
     }
+    if (interaction.isStringSelectMenu()) {
+      const { customId, guild, member, values } = interaction;
+      if (customId === 'select_autorole') {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        const { toggleMemberRole } = await import('../services/autoroleService.js');
+        const results = [];
+        for (const roleId of values) {
+          const res = await toggleMemberRole(guild, member, roleId);
+          if (res.success) {
+            results.push(`${res.action === 'added' ? '✅ Ajouté' : '🗑️ Retiré'} : ${res.roleMention}`);
+          }
+        }
+        return await interaction.editReply({
+          content: results.length > 0
+            ? `🎭 **Vos rôles ont été mis à jour avec succès :**\n${results.join('\n')}`
+            : '❌ Impossible de modifier vos rôles.',
+        });
+      }
+    }
   },
 };
