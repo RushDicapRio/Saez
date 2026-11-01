@@ -47,10 +47,11 @@ export async function saveAutoRoleConfig(data) {
 }
 export function buildAutoRolePanel(cfg, guild) {
   const rolesList = Array.isArray(cfg.roles) ? cfg.roles : [];
-  let desc = cfg.description || 'Cliquez sur les boutons ci-dessous pour choisir vos rôles :';
+  const mode = cfg.display_mode || 'select'; // 'select' | 'buttons' | 'both'
+  let desc = cfg.description || (mode === 'select' ? 'Sélectionnez un ou plusieurs rôles dans le menu déroulant ci-dessous :' : 'Cliquez sur les boutons ci-dessous pour choisir vos rôles :');
   desc += '\n\n**Rôles disponibles :**\n';
   if (rolesList.length === 0) {
-    desc += '*Aucun rôle n\'est encore configuré. Utilisez `/autorole add` pour en ajouter.*';
+    desc += '*Aucun rôle n\'est encore configuré. Ajoutez-en depuis le Dashboard Saez ou avec `/autorole add`.*';
   } else {
     for (const r of rolesList) {
       const emojiStr = r.emoji ? `${r.emoji} ` : '';
@@ -68,33 +69,57 @@ export function buildAutoRolePanel(cfg, guild) {
     .setTimestamp();
   const components = [];
   if (rolesList.length > 0) {
-    const rows = [];
-    let currentRow = new ActionRowBuilder();
-    rolesList.slice(0, 25).forEach((r, idx) => {
-      const buttonStyle =
-        r.style === 'Secondary'
-          ? ButtonStyle.Secondary
-          : r.style === 'Success'
-          ? ButtonStyle.Success
-          : r.style === 'Danger'
-          ? ButtonStyle.Danger
-          : ButtonStyle.Primary;
-      const btn = new ButtonBuilder()
-        .setCustomId(`btn_autorole_${r.role_id}`)
-        .setLabel(r.label.slice(0, 80))
-        .setStyle(buttonStyle);
-      if (r.emoji) {
-        try {
-          btn.setEmoji(r.emoji);
-        } catch {}
-      }
-      currentRow.addComponents(btn);
-      if (currentRow.components.length === 5 || idx === rolesList.length - 1) {
-        rows.push(currentRow);
-        currentRow = new ActionRowBuilder();
-      }
-    });
-    components.push(...rows);
+    if (mode === 'select' || mode === 'both') {
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId('select_autorole')
+        .setPlaceholder('🎭 Sélectionnez vos rôles dans la liste...')
+        .setMinValues(1)
+        .setMaxValues(Math.min(rolesList.length, 25));
+      rolesList.slice(0, 25).forEach((r) => {
+        const option = new StringSelectMenuOptionBuilder()
+          .setLabel((r.label || 'Rôle').slice(0, 100))
+          .setValue(String(r.role_id));
+        if (r.description && r.description.trim()) {
+          option.setDescription(r.description.trim().slice(0, 100));
+        } else {
+          option.setDescription(`Activer / désactiver le rôle ${r.label}`);
+        }
+        if (r.emoji && r.emoji.trim()) {
+          try {
+            option.setEmoji(r.emoji.trim());
+          } catch {}
+        }
+        selectMenu.addOptions(option);
+      });
+      components.push(new ActionRowBuilder().addComponents(selectMenu));
+    }
+    if (mode === 'buttons' || mode === 'both') {
+      let currentRow = new ActionRowBuilder();
+      rolesList.slice(0, 25).forEach((r, idx) => {
+        const buttonStyle =
+          r.style === 'Secondary'
+            ? ButtonStyle.Secondary
+            : r.style === 'Success'
+            ? ButtonStyle.Success
+            : r.style === 'Danger'
+            ? ButtonStyle.Danger
+            : ButtonStyle.Primary;
+        const btn = new ButtonBuilder()
+          .setCustomId(`btn_autorole_${r.role_id}`)
+          .setLabel(r.label.slice(0, 80))
+          .setStyle(buttonStyle);
+        if (r.emoji) {
+          try {
+            btn.setEmoji(r.emoji);
+          } catch {}
+        }
+        currentRow.addComponents(btn);
+        if (currentRow.components.length === 5 || idx === rolesList.length - 1) {
+          components.push(currentRow);
+          currentRow = new ActionRowBuilder();
+        }
+      });
+    }
   }
   return { embed, components };
 }
