@@ -342,6 +342,17 @@ async function processPendingBotCommands(client) {
             const { autoCreateMilestoneRoles } = await import('./discordLevelService.js');
             result = await autoCreateMilestoneRoles(guild);
           }
+        } else if (cmd.command === 'send_autorole_panel') {
+          const { channel_id, mode } = cmd.payload || {};
+          const { getAutoRoleConfig, buildAutoRolePanel } = await import('./autoroleService.js');
+          const cfg = await getAutoRoleConfig();
+          const targetChanId = channel_id || cfg.channel_id;
+          const channel = client.channels.cache.get(targetChanId) || (await client.channels.fetch(targetChanId).catch(() => null));
+          if (!channel) throw new Error('Salon introuvable pour le panneau d\'auto-rôles');
+          const mergedCfg = { ...cfg, ...(cmd.payload || {}), ...(mode ? { display_mode: mode } : {}) };
+          const { embed, components } = buildAutoRolePanel(mergedCfg, channel.guild);
+          const sent = await channel.send({ embeds: [embed], components });
+          result = { success: true, messageId: sent.id };
         }
         await colCmd.updateOne(
           { _id: cmd._id },
